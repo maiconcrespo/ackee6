@@ -6,11 +6,14 @@ declare_id!("EknHTqyGbmEKdaxBV9v64NAdhS2NzZY57pjKscRV3E23");
 pub mod program_b {
     use super::*;
 
-    pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
-        msg!("Greetings from: {:?}", ctx.program_id);
+    pub fn initialize(_ctx: Context<Initialize>) -> Result<()> {
+        msg!("Greetings from program B");
         Ok(())
     }
 }
 
 #[derive(Accounts)]
-pub struct Initialize {}
+pub struct Initialize<'info> {
+    pub pda_accoutn: Signer<'info>,
+    
+}
