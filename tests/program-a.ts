@@ -1,13 +1,15 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
 import { ProgramA } from "../target/types/program_a";
+import { ProgramB } from "../target/types/program_b";
 
 
 describe("program-a", () => {
   // Configure the client to use the local cluster.
   anchor.setProvider(anchor.AnchorProvider.env());
 
-  const program = anchor.workspace.ProgramA as Program<ProgramA>;
+  const programA = anchor.workspace.ProgramA as Program<ProgramA>;
+  const programB = anchor.workspace.ProgramB as Program<ProgramB>;
   
   let signer = anchor.web3.Keypair.generate();
 
@@ -18,13 +20,14 @@ describe("program-a", () => {
 
   
     // essta funcion creara una direccion publica para el programa y un numero(bump).
-    let[pda_address,bum] = anchor.web3.PublicKey.findProgramAddressSync([Buffer.from("ackee"),signer.publicKey.toBuffer()],program.programId);
-    await airdrop(program.provider.connection,pda_address,500_000_000_000);
+    let[pda_address,bum] = anchor.web3.PublicKey.findProgramAddressSync([Buffer.from("ackee"),signer.publicKey.toBuffer()],programA.programId);
+    await airdrop(programA.provider.connection,pda_address,500_000_000_000);
     // Add your test here.
-    const tx = await program.methods.initialize().accounts({
+    const tx = await programA.methods.initialize().accounts({
       pdaAccount:pda_address,
       signer:signer.publicKey,
       systemProgram:anchor.web3.SystemProgram.programId,
+      programB: programB.programId,
 
 
 
@@ -32,6 +35,14 @@ describe("program-a", () => {
     console.log("Your transaction signature", tx);
   });
 });
+
+
+
+
+
+
+
+
 
 export async function airdrop(
   connection : any,
