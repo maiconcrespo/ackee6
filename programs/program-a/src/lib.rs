@@ -39,17 +39,18 @@ pub mod program_a {
 
 #[derive(Accounts)]
 pub struct Initialize<'info> {
+    ///CHECK: ackee
     #[account(
         mut,
         seeds = [b"ackee",signer.key.as_ref()],
         bump, //bump asi usa una numero canonico para generar la direccion de la cuenta pda empezando por el 255, hasta que salga de la curva y sea valida
         //bump = 5, //bump es un numero aleatorio que se usa para generar la direccion de la cuenta pda
     )]
-    pub pda_account: AccountInfo<'info>, //cuenta de programa b
+    pub pda_account: AccountInfo<'info>, //cuenta de programa b //AcountInfo es un tipo de dato que se usa para referenciar a una cuenta en la blockchain es inseguro no recomendable en producion
 
     #[account(mut)]
-    pub signer: Signer<'info>, //signer de programa a
+    pub signer: Signer<'info>, //signer de programa a ya que la pda necesita autorizacion para transferir los lamports y no puede firmar por si misma.
     pub system_program: Program<'info, System>, //programa del sistema
-    pub program_b: Program<'info, ProgramB>, //definindo en cargo toml. Anchor crea automaticamete el struct de la cuenta de programa b para usar la funcionalidad de CPI.
+   // pub program_b: Program<'info, ProgramB>, //definindo en cargo toml. Anchor crea automaticamete el struct de la cuenta de programa b para usar la funcionalidad de CPI.
                                              /*En esta instruccion decimos que vamos usar las instruction Programa, mas precisamente del ProgramB implementando localmente dentro del espacio de trabajo */
 }
