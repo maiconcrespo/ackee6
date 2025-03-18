@@ -14,6 +14,6 @@ pub mod program_b {
 
 #[derive(Accounts)]
 pub struct Initialize<'info> {
-    pub pda_accoutn: Signer<'info>,
-    
+    pub pda_account: Signer<'info>,
+
 }

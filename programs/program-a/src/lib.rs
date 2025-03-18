@@ -5,7 +5,7 @@ declare_id!("9meeySgNgNmG29VYBNjmdqfEaAMpgYb63DB8SBe8v6vX");
 
 #[program]
 pub mod program_a {
-    use anchor_lang::solana_program::{program::invoke_signed, system_instruction};
+    use anchor_lang::{accounts::program, solana_program::{program::invoke_signed, system_instruction}};
 
     use super::*;
 
@@ -33,6 +33,16 @@ pub mod program_a {
         invoke_signed(instruction, &account_infos, signers_seeds)?;
 //anchor.toml resolution = false
 
+        //LLAMAR A La funcion PROGRAMB
+
+        let cpi_context = CpiContext::new_with_signer(
+            ctx.accounts.program_b.to_account_info(),
+            program_b::cpi::accounts::Initialize{ pda_account: ctx.accounts.pda_account.to_account_info() },
+            signers_seeds
+            );
+
+            program_b::cpi::initialize(cpi_context)?;
+
         Ok(())
     }
 }
@@ -51,6 +61,6 @@ pub struct Initialize<'info> {
     #[account(mut)]
     pub signer: Signer<'info>, //signer de programa a ya que la pda necesita autorizacion para transferir los lamports y no puede firmar por si misma.
     pub system_program: Program<'info, System>, //programa del sistema
-   // pub program_b: Program<'info, ProgramB>, //definindo en cargo toml. Anchor crea automaticamete el struct de la cuenta de programa b para usar la funcionalidad de CPI.
+    pub program_b: Program<'info, ProgramB>, //definindo en cargo toml. Anchor crea automaticamete el struct de la cuenta de programa b para usar la funcionalidad de CPI.
                                              /*En esta instruccion decimos que vamos usar las instruction Programa, mas precisamente del ProgramB implementando localmente dentro del espacio de trabajo */
 }
